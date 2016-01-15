@@ -1,0 +1,18 @@
+#!/bin/bash
+##
+# Dramatic Screenshot. Depends on imagemagick and scrot.
+#
+# @version 1.0
+# @author Kevin Hamer [kh] <kevin.hamer@gmail.com>
+
+file=$(date +%F-%H%M%S.png)
+scrot -sq 100 /tmp/$file
+dim=$(identify /tmp/$file | mawk '{print $3}')
+
+convert /tmp/$file -resize 150% -gravity Center -crop $dim+0+0 /tmp/$file-1.5
+convert /tmp/$file -resize 225% -gravity Center -crop $dim+0+0 /tmp/$file-2.25
+convert -gravity east -splice 4x0 /tmp/$file /tmp/$file-1.5 /tmp/$file-2.25 +append -chop 4x0 /tmp/d-$file
+rm /tmp/$file /tmp/$file-1.5 /tmp/$file-2.25
+
+mv /tmp/d-$file $HOME/Pictures/$file
+firefox $HOME/Pictures/$file
